@@ -1,0 +1,64 @@
+version: 2.1
+
+executors:
+  terraform:
+    docker:
+      - image: hashicorp/terraform:0.12.20
+
+prod-context: &prod-context
+  context: aqua-aws-infrastructure-prod
+
+terraform_job: &terraform-job
+  description: Run terraform plan against a specified environment.
+  executor: terraform
+  parameters:
+    env:
+      description: The name of the environment to run the job against
+      type: string
+    action:
+      description: The terraform action to perform
+      type: string
+  steps:
+    - get_source
+    - run:
+        name: terraform init 
+        command: |-
+          terraform init -input=false -backend-config=<< parameters.env >>.tfbackend
+    - run:
+        name: terraform << parameters.action >>
+        command: |-
+          terraform << parameters.action >> -var-file=<< parameters.env >>.tfvars -input=false
+
+commands:
+  get_source:
+    steps:
+      - checkout
+   
+jobs:
+  prod_plan: 
+    <<: *terraform-job
+  
+  prod_apply: 
+    <<: *terraform-job
+
+workflows:
+  plan_and_apply:
+    description: A workflow that deploys to one environment and runs plan in the next environment.
+    jobs:
+      - prod_plan:
+          <<: *prod-context
+          env: prod
+          action: plan
+          filters:
+            branches:
+              ignore:
+                - master
+      - prod_apply:
+          <<: *prod-context
+          env: prod
+          action: apply -auto-approve
+          filters:
+            branches:
+              only:
+                - master
+  
