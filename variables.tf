@@ -7,7 +7,7 @@ variable "region" {
 variable "profile" {
   type        = string
   description = "AWS credential profile"
-  defautl     = "default"
+  default     = "default"
 }
 
 variable "vpc_cidr" {
