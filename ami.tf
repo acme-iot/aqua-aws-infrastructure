@@ -12,3 +12,19 @@ data "aws_ami" "hivemq" {
     values = ["hvm"]
   }
 }
+
+
+data "aws_ami" "mosquitto" {
+  most_recent = true
+  owners      = ["136963196437"]
+
+  filter {
+    name   = "name"
+    values = ["Mosquitto*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+}

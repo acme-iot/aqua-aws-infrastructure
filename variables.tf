@@ -15,3 +15,9 @@ variable "vpc_cidr" {
   description = "Base CIDR block"
   default     = "10.10.0.0/16"
 }
+
+variable "mqtt_type" {
+  type = string
+  description = "Define the MQTT Broker. Options, hivemq, or mosquitto"
+  default = "hivemq"
+}

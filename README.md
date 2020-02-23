@@ -1,6 +1,6 @@
 # Aquaponics AWS Infrastructure
 
-Builds out HiveMQ instance and supporting infrastructure. 
+Builds out mqtt instance and supporting infrastructure. 
 
 ## Dependencies
 
